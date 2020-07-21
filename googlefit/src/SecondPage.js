@@ -16,30 +16,76 @@ class SecondPage extends React.Component {
     
     onHeart = async (e) => {
         e.preventDefault();
-        console.log(this.state.startDate)
-        console.log(this.state.endDate)
-        console.log(this.state.token)
-        console.log(this.state.viewPage)
-        await axios.get('',{
+        var myDate = new Date(this.state.startDate+"T00:00:00+0000");
+        var result1 = myDate.getTime();
+        var myDate2 = new Date(this.state.endDate+"T00:00:00+0000");
+        var result2 = myDate2.getTime();
+        await axios.get('https://www.googleapis.com/fitness/v1/users/me/dataSources/derived:com.google.heart_rate.bpm:com.google.android.gms:merge_heart_rate_bpm/datasets/'+result1+'000000-'+result2+'000000',{
             headers: {
                 'Authorization': 'Bearer '+this.state.token,
             }
         }).then((resp) => {
-            var str = 'data'
+            var array = resp.data["point"]
+            var str = 'start-time,end-time,value';
+            for (var i = 0; i < array.length; i++) {
+                var line = '';
+                var x = array[i].startTimeNanos
+                var y = array[i].endTimeNanos
+                var res = array[i].value[0]
+                var data = [x,y,res];
+                for (i in data) {
+                    if (line !== '') line += ','
+                    line += data[i];
+                }
+                str += '\r\n' + line;
+            }
             FileDownload(str, 'heart-rate.csv');
         });
     }
 
     onStep = async (e) => {
         e.preventDefault();
-        await axios.get('',{
-            headers: {
+        var myDate = new Date(this.state.startDate+"T00:00:00+0000");
+        var result1 = myDate.getTime();
+        var myDate2 = new Date(this.state.endDate+"T00:00:00+0000");
+        var result2 = myDate2.getTime();
+        const requestOptions = {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
                 'Authorization': 'Bearer '+this.state.token,
+            },
+            body: JSON.stringify({
+                "aggregateBy": [{
+                  "dataTypeName": "com.google.step_count.delta",
+                  "dataSourceId": "derived:com.google.step_count.delta:com.google.android.gms:estimated_steps"
+                }],
+                "bucketByTime": { "durationMillis": 86400000 },
+                "startTimeMillis": result1,
+                "endTimeMillis": result2
+            })
+        };
+        fetch('https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate', requestOptions)
+        .then(response => response.json())
+        .then((responseText) => {
+            var array = responseText["bucket"]
+            var str = 'start-date,time,end-date,time,value';
+            for (var i = 0; i < array.length; i++) {
+                var line = '';
+                var x = array[i].startTimeMillis
+                var y = array[i].endTimeMillis
+                var res = array[i].dataset[0].point[0].value[0].intVal
+                x = new Date(parseInt(x)).toLocaleString()
+                y = new Date(parseInt(y)).toLocaleString()
+                var data = [x,y,res];
+                for (i in data) {
+                    if (line !== '') line += ','
+                    line += data[i];
+                }
+                str += '\r\n' + line;
             }
-        }).then((resp) => {
-            var str = 'data'
             FileDownload(str, 'steps.csv');
-        });
+        })
     }
 
     render() {
