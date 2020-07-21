@@ -26,13 +26,15 @@ class SecondPage extends React.Component {
             }
         }).then((resp) => {
             var array = resp.data["point"]
-            var str = 'start-time,end-time,value';
+            var str = 'date,time,value';
             for (var i = 0; i < array.length; i++) {
                 var line = '';
                 var x = array[i].startTimeNanos
                 var y = array[i].endTimeNanos
-                var res = array[i].value[0]
-                var data = [x,y,res];
+                x = new Date(parseInt(x)/1000000).toLocaleString()
+                y = new Date(parseInt(y)/1000000).toLocaleString()
+                var res = array[i].value[0].fpVal
+                var data = [x,res];
                 for (i in data) {
                     if (line !== '') line += ','
                     line += data[i];
@@ -40,6 +42,7 @@ class SecondPage extends React.Component {
                 str += '\r\n' + line;
             }
             FileDownload(str, 'heart-rate.csv');
+            alert("Please wait till the file get downloaded")
         });
     }
 
@@ -85,6 +88,7 @@ class SecondPage extends React.Component {
                 str += '\r\n' + line;
             }
             FileDownload(str, 'steps.csv');
+            alert("Please wait till the file get downloaded")
         })
     }
 
