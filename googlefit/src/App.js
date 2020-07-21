@@ -13,7 +13,6 @@ class App extends React.Component {
   }
 
   onsubmit = async (e) => {
-    console.log("Hi")
     e.preventDefault();
     var url = window.location.href;
     var a = url.split("access_token="); 
