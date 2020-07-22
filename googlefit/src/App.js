@@ -3,7 +3,6 @@ import Button from 'react-bootstrap/Button'
 import './App.css';
 import axios from 'axios';
 import FileDownload from 'js-file-download';
-// import data from './config'
 
 class App extends React.Component {
   constructor(props) {
@@ -73,55 +72,68 @@ class App extends React.Component {
             'Authorization': 'Bearer '+this.state.token,
         }
     }).then((resp) => {
-        var array = resp.data["point"]
-        var str = 'date,time,value';
-        if(array.length === 0) {
-            alert("There is no heart data associated with this account")
-        } else {
-          for (var i = 0; i < array.length; i++) {
-              var line = '';
-              var x = array[i].startTimeNanos
-              var y = array[i].endTimeNanos
-              x = new Date(parseInt(x)/1000000).toLocaleString()
-              y = new Date(parseInt(y)/1000000).toLocaleString()
-              var res = array[i].value[0].fpVal
-              var data = [x,res];
-              for (var j in data) {
-                  if (line !== '') line += ','
-                  line += data[j];
-              }
-              str += '\r\n' + line;
-          }
-          FileDownload(str, 'heart-rate.csv');
-          alert("Please wait till the file get downloaded")
+      var array = resp.data["point"]
+      if(array.length === 0) {
+        alert("There is no step data associated with this account")
+      } else {
+        var dA = [];
+        var items = [];
+        for (var q = 0; q < array.length; q++) {
+          let time = array[q].startTimeNanos;
+          let val = array[q]["value"][0]["fpVal"];
+          var b = parseInt(time);
+          var date = new Date(b / 1000000);
+          let obj = {
+            'date': date.toLocaleDateString(),
+            'time': date.toTimeString(),
+            'val': val,
+          };
+          dA.push(obj);
+          items.push(date.toLocaleDateString());
         }
+        var uniqueItems = Array.from(new Set(items));
+        var str = "time," + uniqueItems.toString();
+        var columns = str.split(",");
+        var times = [];
+        var totalData = [];
+        for (var i = 0; i < dA.length; i++) {
+          var line = new Array(columns.length);
+          var index = 0;
+          var isAv = 0;
+          for (var j = 0; j < columns.length; j++) {
+            if (dA[i]["date"] === columns[j]) {
+              index = j;
+            }
+          }
+          for (var r = 0; r < times.length; r++) {
+            if (dA[i]["time"] === times[r]) {
+              totalData[r][index] = dA[i]["val"];
+              isAv = 1;
+            }
+          }
+          if (isAv === 0) {
+            for (var k = 0; k < line.length; k++) {
+              if (k === 0) {
+                line[k] = dA[i]["time"];
+                times.push(dA[i]["time"]);
+              } else if (k === index) {
+                line[k] = dA[i]["val"];
+              } else {
+                line[k] = "--";
+              }
+            }
+            totalData.push(line);
+          }
+        }
+        str += "\r\n";
+        for (var p = 0; p < totalData.length; p++) {
+          str += totalData[p].toString() + "\r\n";
+        }
+        FileDownload(str,'steps.csv');
+        alert("Please wait till the file get downloaded")
+      }
     });
   }
-
-  // ontest = () => {
-  //   var resp = data
-  //   var array = resp.data["point"]
-  //   var title_array = [" "]
-  //   console.log(array)
-  //   var time_array = []
-  //   for (var i = 0; i < array.length; i++) {
-  //     var x = array[i].startTimeNanos
-  //     x = new Date(parseInt(x)/1000000).toLocaleString()
-  //     var res = array[i].value[0].fpVal
-  //     const answer_array = x.split(',');
-  //     console.log(answer_array)
-  //     if (title_array[title_array.length-1] === answer_array[0]) {
-  //       var exg = 1
-  //     } else {
-  //       title_array.push(answer_array[0])
-  //       var exg = 0
-  //     }
-  //     if (exg === 0) {
-
-  //     }
-  //   }
-  //   console.log(title_array[title_array.length-1])
-  // }
 
   onsubmit = async (e) => {
     e.preventDefault();
@@ -135,9 +147,8 @@ class App extends React.Component {
     if (this.state.token === '') {
       return
     } else {
-      await this.onStep();
+      // await this.onStep();
       await this.onHeart();
-      // await this.ontest();
     }
   }
 
