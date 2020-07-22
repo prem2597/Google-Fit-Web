@@ -1,5 +1,4 @@
 node_modules/
-package-lock.json
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
@@ -32,4 +31,6 @@ googlefit/src/App.test.js
 googlefit/src/logo.svg
 googlefit/src/serviceWorker.js
 googlefit/src/setupTests.js
+
+
 
