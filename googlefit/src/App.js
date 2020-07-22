@@ -9,7 +9,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       token: "",
-      startDate: "2020-07-05",
+      startDate: "2020-07-20",
       endDate: Date.now()
     }
   }
