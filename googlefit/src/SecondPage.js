@@ -27,22 +27,26 @@ class SecondPage extends React.Component {
         }).then((resp) => {
             var array = resp.data["point"]
             var str = 'date,time,value';
-            for (var i = 0; i < array.length; i++) {
-                var line = '';
-                var x = array[i].startTimeNanos
-                var y = array[i].endTimeNanos
-                x = new Date(parseInt(x)/1000000).toLocaleString()
-                y = new Date(parseInt(y)/1000000).toLocaleString()
-                var res = array[i].value[0].fpVal
-                var data = [x,res];
-                for (i in data) {
-                    if (line !== '') line += ','
-                    line += data[i];
+            if(array.length === 0) {
+                alert("There is no data associated with this account")
+            } else {
+                for (var i = 0; i < array.length; i++) {
+                    var line = '';
+                    var x = array[i].startTimeNanos
+                    var y = array[i].endTimeNanos
+                    x = new Date(parseInt(x)/1000000).toLocaleString()
+                    y = new Date(parseInt(y)/1000000).toLocaleString()
+                    var res = array[i].value[0].fpVal
+                    var data = [x,res];
+                    for (i in data) {
+                        if (line !== '') line += ','
+                        line += data[i];
+                    }
+                    str += '\r\n' + line;
                 }
-                str += '\r\n' + line;
+                FileDownload(str, 'heart-rate.csv');
+                alert("Please wait till the file get downloaded")
             }
-            FileDownload(str, 'heart-rate.csv');
-            alert("Please wait till the file get downloaded")
         });
     }
 
@@ -73,22 +77,26 @@ class SecondPage extends React.Component {
         .then((responseText) => {
             var array = responseText["bucket"]
             var str = 'start-date,time,end-date,time,value';
-            for (var i = 0; i < array.length; i++) {
-                var line = '';
-                var x = array[i].startTimeMillis
-                var y = array[i].endTimeMillis
-                var res = array[i].dataset[0].point[0].value[0].intVal
-                x = new Date(parseInt(x)).toLocaleString()
-                y = new Date(parseInt(y)).toLocaleString()
-                var data = [x,y,res];
-                for (i in data) {
-                    if (line !== '') line += ','
-                    line += data[i];
+            if(array.length === 0) {
+                alert("There is no data associated with this account")
+            } else {
+                for (var i = 0; i < array.length; i++) {
+                    var line = '';
+                    var x = array[i].startTimeMillis
+                    var y = array[i].endTimeMillis
+                    var res = array[i].dataset[0].point[0].value[0].intVal
+                    x = new Date(parseInt(x)).toLocaleString()
+                    y = new Date(parseInt(y)).toLocaleString()
+                    var data = [x,y,res];
+                    for (i in data) {
+                        if (line !== '') line += ','
+                        line += data[i];
+                    }
+                    str += '\r\n' + line;
                 }
-                str += '\r\n' + line;
+                FileDownload(str, 'steps.csv');
+                alert("Please wait till the file get downloaded")
             }
-            FileDownload(str, 'steps.csv');
-            alert("Please wait till the file get downloaded")
         })
     }
 
