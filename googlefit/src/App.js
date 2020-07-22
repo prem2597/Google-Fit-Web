@@ -1,5 +1,4 @@
 import React from 'react';
-import Button from 'react-bootstrap/Button'
 import './App.css';
 import axios from 'axios';
 import FileDownload from 'js-file-download';
@@ -11,6 +10,15 @@ class App extends React.Component {
       token: "",
       startDate: "2020-07-20",
       endDate: Date.now()
+    }
+  }
+  
+  componentDidMount() {
+    var url = window.location.href;
+    while(url.includes("access_token")) {
+      alert("Please wait until we get your data")
+      setTimeout(this.onsubmit(), 1000)
+      break;
     }
   }
 
@@ -74,7 +82,7 @@ class App extends React.Component {
     }).then((resp) => {
       var array = resp.data["point"]
       if(array.length === 0) {
-        alert("There is no step data associated with this account")
+        alert("There is no heart data associated with this account")
       } else {
         var dA = [];
         var items = [];
@@ -130,13 +138,11 @@ class App extends React.Component {
           str += totalData[p].toString() + "\r\n";
         }
         FileDownload(str,'steps.csv');
-        alert("Please wait till the file get downloaded")
       }
     });
   }
 
-  onsubmit = async (e) => {
-    e.preventDefault();
+  onsubmit = async () => {
     var url = window.location.href;
     var a = url.split("access_token="); 
     var access_token = a[1].split("&")[0];
@@ -150,6 +156,7 @@ class App extends React.Component {
       // await this.onStep();
       await this.onHeart();
     }
+    return
   }
 
   render() {
@@ -165,10 +172,6 @@ class App extends React.Component {
             >
             Login
           </a>
-          <div>
-            <br />
-            <Button type="Submit" onClick={this.onsubmit} style={{backgroundColor: "orange"}}>Download the data</Button>
-          </div>
         </header>
       </div>
     );
