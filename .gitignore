@@ -1,3 +1,36 @@
 node_modules/
 package-lock.json
 
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+googlefit/node_modules
+/.pnp
+.pnp.js
+googlefit/public
+
+# testing
+/coverage
+
+# production
+googlefit/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+googlefit/package-lock.json
+
+googlefit/src/App.css
+googlefit/src/App.test.js
+googlefit/src/logo.svg
+googlefit/src/serviceWorker.js
+googlefit/src/setupTests.js
+
