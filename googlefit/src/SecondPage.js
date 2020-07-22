@@ -38,9 +38,9 @@ class SecondPage extends React.Component {
                     y = new Date(parseInt(y)/1000000).toLocaleString()
                     var res = array[i].value[0].fpVal
                     var data = [x,res];
-                    for (i in data) {
+                    for (var j in data) {
                         if (line !== '') line += ','
-                        line += data[i];
+                        line += data[j];
                     }
                     str += '\r\n' + line;
                 }
@@ -77,13 +77,11 @@ class SecondPage extends React.Component {
         .then((responseText) => {
             var array = responseText["bucket"]
             var str = 'start-date,time,end-date,time,value';
-            console.log("-------------------------")
-            console.log(responseText)
-            console.log("-------------------------")
             if(array.length === 0) {
                 alert("There is no data associated with this account")
             } else {
                 for (var i = 0; i < array.length; i++) {
+                    console.log("i",i)
                     var line = '';
                     var x = array[i].startTimeMillis
                     var y = array[i].endTimeMillis
@@ -91,9 +89,9 @@ class SecondPage extends React.Component {
                     x = new Date(parseInt(x)).toLocaleString()
                     y = new Date(parseInt(y)).toLocaleString()
                     var data = [x,y,res];
-                    for (i in data) {
+                    for (var j in data) {
                         if (line !== '') line += ','
-                        line += data[i];
+                        line += data[j];
                     }
                     str += '\r\n' + line;
                 }

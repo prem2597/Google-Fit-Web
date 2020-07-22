@@ -50,7 +50,7 @@ class FirstPage extends React.Component {
                 <div style={{backgroundColor: "lightblue", padding : 100, margin : 100, textAlign: "center"}}>
                     <form>
                         <div>
-                            <h4>Enter the start date : </h4>
+                            <h4>Enter the start date : should be like this(YYYY-MM-DD) also place the '-'</h4>
                             <InputGroup className='mb-3'>
                                 <FormControl 
                                 placeholder="YYYY-MM-DD"
@@ -62,7 +62,7 @@ class FirstPage extends React.Component {
                             </InputGroup>
                         </div>
                         <div>
-                            <h4>Enter the End date : </h4>
+                            <h4>Enter the End date : should be like this(YYYY-MM-DD) also place the '-'</h4>
                             <InputGroup className='mb-3'>
                                 <FormControl 
                                 placeholder="YYYY-MM-DD"
