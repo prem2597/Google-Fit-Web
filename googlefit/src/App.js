@@ -93,7 +93,7 @@ class App extends React.Component {
           var date = new Date(b / 1000000);
           let obj = {
             'date': date.toLocaleDateString(),
-            'time': date.toTimeString(),
+            'time': date.toLocaleTimeString(),
             'val': val,
           };
           dA.push(obj);
