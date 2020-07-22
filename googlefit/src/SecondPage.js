@@ -77,6 +77,9 @@ class SecondPage extends React.Component {
         .then((responseText) => {
             var array = responseText["bucket"]
             var str = 'start-date,time,end-date,time,value';
+            console.log("-------------------------")
+            console.log(responseText)
+            console.log("-------------------------")
             if(array.length === 0) {
                 alert("There is no data associated with this account")
             } else {
