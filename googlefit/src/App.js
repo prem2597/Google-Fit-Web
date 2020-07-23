@@ -2,8 +2,7 @@ import React from 'react';
 import './App.css';
 import axios from 'axios';
 import FileDownload from 'js-file-download';
-import data from './config'
-import { LineChart, Line, YAxis, Tooltip, CartesianGrid, XAxis, Label, Legend } from 'recharts'
+import { LineChart, Line, YAxis, LabelList, Tooltip, CartesianGrid, XAxis, Label, Legend } from 'recharts'
 
 /**
  * @author Prem
@@ -85,7 +84,6 @@ class App extends React.Component {
             'Authorization': 'Bearer '+this.state.token,
         }
     }).then((resp) => {
-      resp=data
       var array = resp.data["point"]
       if(array.length === 0) {
         alert("There is no heart data associated with this account")
@@ -105,6 +103,9 @@ class App extends React.Component {
           dA.push(obj);
           items.push(date.toLocaleDateString());
         }
+        this.setState({
+          dataset:dA
+        })
         var uniqueItems = Array.from(new Set(items));
         var str = "time," + uniqueItems.toString();
         var columns = str.split(",");
@@ -140,9 +141,6 @@ class App extends React.Component {
           }
         }
         str += "\r\n";
-        this.setState({
-          dataset:totalData
-        })
         for (var p = 0; p < totalData.length; p++) {
           str += totalData[p].toString() + "\r\n";
         }
@@ -167,52 +165,48 @@ class App extends React.Component {
     return
   }
 
+  handleDataset = () => {
+    const dataSet = []
+    var dA = this.state.dataset
+    var oldDate = dA[0]["date"];
+    for (var i = 0; i < dA.length; i++) {
+      if (i === 0) {
+        let obj = { name: oldDate.slice(0, -5), HR: dA[0]["val"] };
+        dataSet.push(obj);
+      } else {
+        if (dA[i]["date"] === oldDate) {
+          let obj = { name: "", HR: dA[i]["val"] };
+          dataSet.push(obj);
+        } else {
+          oldDate = dA[i]["date"];
+          let obj = { name: oldDate.slice(0, -5), HR: dA[i]["val"] };
+          dataSet.push(obj);
+        }
+      }
+    }
+    return dataSet
+  }
+
   render() {
     if(this.state.dataset !== '') {
-      const datatest = [
-        {
-          "name": "Page A",
-          "uv": 4000,
-        },
-        {
-          "name": "",
-          "uv": 3000,
-        },
-        {
-          "name": "Page C",
-          "uv": 2000,
-        },
-        {
-          "name": "Page D",
-          "uv": 2780,
-        },
-        {
-          "name": "Page E",
-          "uv": 1890,
-        },
-        {
-          "name": "Page F",
-          "uv": 2390,
-        },
-        {
-          "name": "Page G",
-          "uv": 3490,
-        }
-      ]
       return (
-        <div className="App-header">
+        <div className="App-graph-header">
           <LineChart 
-            width={850}
+            width={1350}
             height = {500}
-            data={datatest}
+            data={this.handleDataset()}
             margin={{top: 5, right: 30, bottom: 5, left: 20}}
           >
-            <XAxis dataKey="name"></XAxis>
-            <YAxis type="number" domain={[1500, 4100]}/>
+            <XAxis dataKey="name">
+              <Label value="minutes wise data from 20-07-2020 till date" position="insideBottom" offset={0}></Label>
+            </XAxis>
+            <YAxis type="number" label={{ value: 'number of beats', angle: -90, position: 'insideLeft' }} domain={[35, 85]}/>
             <Tooltip />
             <CartesianGrid strokeDasharray="3 3" />
             <Legend />
-            <Line type="monotone" dataKey="uv" stroke="green" />
+            <Line type="monotone" dataKey="HR" stroke="#008080">
+              <LabelList dataKey="name" position="top" />
+            </Line>
           </LineChart>
         </div>
       )
@@ -225,7 +219,7 @@ class App extends React.Component {
           </p>
           <a
             className="App-link"
-            href="https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=http://localhost:3000&prompt=consent&response_type=token&client_id=636081071621-u85kar6sv7pmh9bavag43feu809cqr5i.apps.googleusercontent.com&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.activity.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.blood_glucose.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.blood_pressure.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.body.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.body_temperature.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.location.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.nutrition.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.oxygen_saturation.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.reproductive_health.read&access_type=online"
+            href="https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=https://master.d2m969ldhi4wsh.amplifyapp.com/&prompt=consent&response_type=token&client_id=636081071621-u85kar6sv7pmh9bavag43feu809cqr5i.apps.googleusercontent.com&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.activity.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.blood_glucose.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.blood_pressure.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.body.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.body_temperature.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.location.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.nutrition.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.oxygen_saturation.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.reproductive_health.read&access_type=online"
             >
             Login
           </a>
