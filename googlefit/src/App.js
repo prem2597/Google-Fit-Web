@@ -96,12 +96,12 @@ class App extends React.Component {
           var b = parseInt(time);
           var date = new Date(b / 1000000);
           let obj = {
-            'date': date.toLocaleDateString(),
-            'time': date.toLocaleTimeString(),
+            'date': date.toLocaleDateString().slice(0, -5),
+            'time': date.toTimeString().slice(0,-34),
             'val': val,
           };
           dA.push(obj);
-          items.push(date.toLocaleDateString());
+          items.push(date.toLocaleDateString().slice(0, -5));
         }
         this.setState({
           dataset:dA
@@ -169,9 +169,9 @@ class App extends React.Component {
     const dataSet = []
     var dA = this.state.dataset
     var oldDate = dA[0]["date"];
-    for (var i = 0; i < dA.length; i++) {
+    for (var i = 0; i < dA.length; i=i+60) {
       if (i === 0) {
-        let obj = { name: oldDate.slice(0, -5), HR: dA[0]["val"] };
+        let obj = { name: oldDate, HR: dA[0]["val"] };
         dataSet.push(obj);
       } else {
         if (dA[i]["date"] === oldDate) {
@@ -179,7 +179,7 @@ class App extends React.Component {
           dataSet.push(obj);
         } else {
           oldDate = dA[i]["date"];
-          let obj = { name: oldDate.slice(0, -5), HR: dA[i]["val"] };
+          let obj = { name: oldDate, HR: dA[i]["val"] };
           dataSet.push(obj);
         }
       }
@@ -198,9 +198,9 @@ class App extends React.Component {
             margin={{top: 5, right: 30, bottom: 5, left: 20}}
           >
             <XAxis dataKey="name">
-              <Label value="minutes wise data from 20-07-2020 till date" position="insideBottom" offset={0}></Label>
+              <Label value="hourly data from 20-07-2020 till date" position="insideBottom" offset={0}></Label>
             </XAxis>
-            <YAxis type="number" label={{ value: 'number of beats', angle: -90, position: 'insideLeft' }} domain={[35, 85]}/>
+            <YAxis type="number" label={{ value: 'number of beats', angle: -90, position: 'insideLeft' }} domain={[25, 125]}/>
             <Tooltip />
             <CartesianGrid strokeDasharray="3 3" />
             <Legend />
