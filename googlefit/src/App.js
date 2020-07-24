@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import axios from 'axios';
 import FileDownload from 'js-file-download';
-import { LineChart, Line, YAxis, LabelList, Tooltip, CartesianGrid, XAxis, Label, Legend } from 'recharts'
+import { LineChart, Line, YAxis, ReferenceLine, LabelList, Tooltip, CartesianGrid, XAxis, Label, Legend } from 'recharts'
 
 /**
  * @author Prem
@@ -98,7 +98,7 @@ class App extends React.Component {
           let obj = {
             'date': date.toLocaleDateString().slice(0, -5),
             'time': date.toTimeString().slice(0,-34),
-            'val': val,
+            'val': Math.floor(val),
           };
           dA.push(obj);
           items.push(date.toLocaleDateString().slice(0, -5));
@@ -198,10 +198,11 @@ class App extends React.Component {
             margin={{top: 5, right: 30, bottom: 5, left: 20}}
           >
             <XAxis dataKey="name">
-              <Label value="hourly data from 20-07-2020 till date" position="insideBottom" offset={0}></Label>
+              <Label value="hourly data from 20-07-2020 till date" position="insideBottomRight" offset={-30}></Label>
             </XAxis>
-            <YAxis type="number" label={{ value: 'number of beats', angle: -90, position: 'insideLeft' }} domain={[25, 125]}/>
+            <YAxis type="number" label={{ value: 'number of beats', angle: -90, position: 'insideBottomLeft' }} domain={[25, 125]}/>
             <Tooltip />
+            <ReferenceLine y={72} stroke="red" strokeDasharray="3 3" />
             <CartesianGrid strokeDasharray="3 3" />
             <Legend />
             <Line type="monotone" dataKey="HR" stroke="#008080">
