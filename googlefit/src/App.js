@@ -3,7 +3,6 @@ import './App.css';
 import axios from 'axios';
 import FileDownload from 'js-file-download';
 import { LineChart, Line, YAxis, ReferenceLine, LabelList, Tooltip, CartesianGrid, XAxis, Label, Legend } from 'recharts'
-import data from './config';
 import Button from 'react-bootstrap/Button';
 
 /**
@@ -89,7 +88,6 @@ class App extends React.Component {
             'Authorization': 'Bearer '+this.state.token,
         }
     }).then((resp) => {
-      resp=data
       var array = resp.data["point"]
       if(array.length === 0) {
         alert("There is no heart data associated with this account")
