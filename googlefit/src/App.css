@@ -26,13 +26,17 @@
 
 .App-graph-header {
   background-color: #dcdcdc;
-  min-height: 100vh;
+  min-height: 83vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: green;
+}
+
+.App-select {
+  background-color: #dcdcdc;
 }
 
 

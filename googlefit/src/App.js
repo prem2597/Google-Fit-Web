@@ -3,6 +3,8 @@ import './App.css';
 import axios from 'axios';
 import FileDownload from 'js-file-download';
 import { LineChart, Line, YAxis, ReferenceLine, LabelList, Tooltip, CartesianGrid, XAxis, Label, Legend } from 'recharts'
+import data from './config';
+import Button from 'react-bootstrap/Button';
 
 /**
  * @author Prem
@@ -12,10 +14,13 @@ class App extends React.Component {
     super(props);
     this.state = {
       token: "",
-      startDate: "2020-07-20",
+      startDate: "2020-08-05",
       endDate: Date.now(),
-      dataset: ""
+      dataset: "",
+      total_data: "",
+      value: "8/5"
     }
+    this.handleChange = this.handleChange.bind(this);
   }
   
   componentDidMount() {
@@ -84,6 +89,7 @@ class App extends React.Component {
             'Authorization': 'Bearer '+this.state.token,
         }
     }).then((resp) => {
+      resp=data
       var array = resp.data["point"]
       if(array.length === 0) {
         alert("There is no heart data associated with this account")
@@ -144,7 +150,9 @@ class App extends React.Component {
         for (var p = 0; p < totalData.length; p++) {
           str += totalData[p].toString() + "\r\n";
         }
-        FileDownload(str,'heart-rate.csv');
+        this.setState({
+          total_data: str
+        })
       }
     });
   }
@@ -165,10 +173,23 @@ class App extends React.Component {
     return
   }
 
+  ondownload = async () => {
+    FileDownload(this.state.total_data,'heart-rate.csv');
+  }
+
+  onselectionchange(dict) {
+    var list = []
+    for (var k in dict) {
+      list.push(k)
+    }
+    return list
+  }
+
   handleDataset = () => {
-    const dataSet = []
+    var dataSet = []
     var dA = this.state.dataset
     var oldDate = dA[0]["date"];
+    var dict= {}
     for (var i = 0; i < dA.length; i=i+60) {
       if (i === 0) {
         let obj = { name: oldDate, HR: dA[0]["val"] };
@@ -178,37 +199,75 @@ class App extends React.Component {
           let obj = { name: "", HR: dA[i]["val"] };
           dataSet.push(obj);
         } else {
+          dict[oldDate] = dataSet
+          dataSet = []
           oldDate = dA[i]["date"];
           let obj = { name: oldDate, HR: dA[i]["val"] };
           dataSet.push(obj);
         }
       }
     }
-    return dataSet
+    dict[oldDate] = dataSet
+    return dict
+  }
+
+  handleChange = (e) => {
+    this.setState({
+      value: e.target.value
+    })
   }
 
   render() {
     if(this.state.dataset !== '') {
+      var res = this.handleDataset()
+      let data = this.onselectionchange(res)
       return (
-        <div className="App-graph-header">
-          <LineChart 
-            width={1350}
-            height = {500}
-            data={this.handleDataset()}
-            margin={{top: 5, right: 30, bottom: 5, left: 20}}
-          >
-            <XAxis dataKey="name">
-              <Label value="hourly data from 20-07-2020 till date" position="insideBottomRight" offset={-30}></Label>
-            </XAxis>
-            <YAxis type="number" label={{ value: 'number of beats', angle: -90, position: 'insideBottomLeft' }} domain={[25, 125]}/>
-            <Tooltip />
-            <ReferenceLine y={72} stroke="red" strokeDasharray="3 3" />
-            <CartesianGrid strokeDasharray="3 3" />
-            <Legend />
-            <Line type="monotone" dataKey="HR" stroke="#008080">
-              <LabelList dataKey="name" position="top" />
-            </Line>
-          </LineChart>
+        <div>
+          <div className="App-select">
+            <br></br>
+          </div>
+          <div className="App-select" style={{textAlign: "center"}}>
+            <div className="createAccount">
+              To download the csv file:
+              {' '}
+              <Button type="Submit" onClick = {this.ondownload} style={{backgroundColor: "orange"}}>download</Button>
+            </div>
+          </div>
+          <div className="App-select">
+            <br></br>
+          </div>
+          <div className="App-select" style={{textAlign: "center"}}>
+            <form>
+              <div style={{textAlign: "center", marginLeft: "45%", width:"10%", backgroundColor: "lightblue"}}>
+                Select the day
+                <select onChange={this.handleChange} placeholder="Select a date">
+                  {data.map((x,y) => (
+                    <option key={y}>{x}</option>
+                  ))}
+                </select>
+              </div>
+            </form>
+          </div>
+          <div className="App-graph-header">
+            <LineChart 
+              width={1350}
+              height = {500}
+              data={res[this.state.value]}
+              margin={{top: 5, right: 30, bottom: 5, left: 20}}
+            >
+              <XAxis dataKey="name">
+                <Label value="hourly data from 20-07-2020 till date" position="insideBottomRight" offset={-30}></Label>
+              </XAxis>
+              <YAxis type="number" label={{ value: 'number of beats', angle: -90, position: 'insideBottomLeft' }} domain={[25, 125]}/>
+              <Tooltip />
+              <ReferenceLine y={72} stroke="red" strokeDasharray="3 3" />
+              <CartesianGrid strokeDasharray="3 3" />
+              <Legend />
+              <Line type="monotone" dataKey="HR" stroke="#008080">
+                <LabelList dataKey="name" position="top" />
+              </Line>
+            </LineChart>
+          </div>
         </div>
       )
     }
@@ -220,7 +279,7 @@ class App extends React.Component {
           </p>
           <a
             className="App-link"
-            href="https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=https://master.d2m969ldhi4wsh.amplifyapp.com/&prompt=consent&response_type=token&client_id=636081071621-u85kar6sv7pmh9bavag43feu809cqr5i.apps.googleusercontent.com&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.activity.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.blood_glucose.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.blood_pressure.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.body.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.body_temperature.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.location.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.nutrition.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.oxygen_saturation.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.reproductive_health.read&access_type=online"
+            href="https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=http://localhost:3000&prompt=consent&response_type=token&client_id=636081071621-u85kar6sv7pmh9bavag43feu809cqr5i.apps.googleusercontent.com&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.activity.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.blood_glucose.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.blood_pressure.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.body.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.body_temperature.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.location.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.nutrition.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.oxygen_saturation.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.reproductive_health.read&access_type=online"
             >
             Login
           </a>
