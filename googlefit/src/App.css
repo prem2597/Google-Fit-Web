@@ -25,13 +25,13 @@
 }
 
 .App-graph-header {
-  background-color: #dcdcdc;
+  background-color: white;
   min-height: 83vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: calc(10px + 1vmin);
   color: green;
 }
 

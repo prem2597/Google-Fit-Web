@@ -186,30 +186,30 @@ class App extends React.Component {
   }
 
   handleDataset = () => {
-    var dataSet = []
-    var dA = this.state.dataset
+    var dataSet = [];
+    var dA = this.state.dataset;
     var oldDate = dA[0]["date"];
-    var dict= {}
-    for (var i = 0; i < dA.length; i=i+60) {
+    var dict = {};
+    for (var i = 0; i < dA.length; i = i + 30) {
       if (i === 0) {
-        let obj = { name: oldDate, HR: dA[0]["val"] };
+        let obj = { name: oldDate, time: dA[0]["time"], HR: dA[0]["val"] };
         dataSet.push(obj);
       } else {
         if (dA[i]["date"] === oldDate) {
-          let obj = { name: "", HR: dA[i]["val"] };
+          let obj = { name: "", time: dA[i]["time"], HR: dA[i]["val"] };
           dataSet.push(obj);
         } else {
-          dict[oldDate] = dataSet
-          dataSet = []
+          dict[oldDate] = dataSet;
+          dataSet = [];
           oldDate = dA[i]["date"];
-          let obj = { name: oldDate, HR: dA[i]["val"] };
+          let obj = { name: oldDate, time: dA[i]["time"], HR: dA[i]["val"] };
           dataSet.push(obj);
         }
       }
     }
-    dict[oldDate] = dataSet
-    return dict
-  }
+    dict[oldDate] = dataSet;
+    return dict;
+  };
 
   handleChange = (e) => {
     this.setState({
@@ -239,7 +239,7 @@ class App extends React.Component {
           <div className="App-select" style={{textAlign: "center"}}>
             <form>
               <div style={{textAlign: "center", marginLeft: "45%", width:"10%", backgroundColor: "lightblue"}}>
-                Select the day
+                Select a date
                 <select onChange={this.handleChange} placeholder="Select a date">
                   {data.map((x,y) => (
                     <option key={y}>{x}</option>
@@ -255,8 +255,8 @@ class App extends React.Component {
               data={res[this.state.value]}
               margin={{top: 5, right: 30, bottom: 5, left: 20}}
             >
-              <XAxis dataKey="name">
-                <Label value="hourly data from 20-07-2020 till date" position="insideBottomRight" offset={-30}></Label>
+              <XAxis dataKey="time">
+                <Label value="hourly data" position="insideBottomRight" offset={-22}></Label>
               </XAxis>
               <YAxis type="number" label={{ value: 'number of beats', angle: -90, position: 'insideBottomLeft' }} domain={[25, 125]}/>
               <Tooltip />
