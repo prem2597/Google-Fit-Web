@@ -13,11 +13,16 @@ class App extends React.Component {
     super(props);
     this.state = {
       token: "",
-      startDate: "2020-08-05",
+      startDate: "2020-11-18",
       endDate: Date.now(),
       dataset: "",
       total_data: "",
-      value: "8/5"
+      value: "8/5",
+      heart_rate_token: '',
+      distance_token: '',
+      calories_token: '',
+      step_count_token: '',
+      activity_token: ''
     }
     this.handleChange = this.handleChange.bind(this);
   }
@@ -79,13 +84,73 @@ class App extends React.Component {
     })
   }
 
+  dataSource = async () => {
+    await axios.get('https://www.googleapis.com/fitness/v1/users/me/dataSources',{
+      headers: {
+        'Authorization': 'Bearer ' + this.state.token,
+      }
+    }).then((resp) => {
+      // console.log(resp.data["dataSource"])
+      var array = resp.data["dataSource"]
+      var heart_rate_token = ''
+      var step_count_token = ''
+      var distance_token = ''
+      var calories_token = ''
+      var activity_token = ''
+      // var oxygen_saturation_token = ''
+      if(array.length === 0) {
+        alert("There is no data sources linked with this account")
+      } else {
+        for (var q = 0; q < array.length; q++) {
+          try {
+            if (array[q]["device"]["uid"] === "e3fc9470") {
+              // console.log(array[q]["dataStreamId"])
+              if (array[q]["dataStreamId"].includes("heart_rate")) {
+                heart_rate_token = array[q]["dataStreamId"]
+              }
+              if (array[q]["dataStreamId"].includes("distance")) {
+                distance_token = array[q]["dataStreamId"]
+              }
+              if (array[q]["dataStreamId"].includes("step_count")) {
+                step_count_token = array[q]["dataStreamId"]
+              }
+              if (array[q]["dataStreamId"].includes("calories")) {
+                calories_token = array[q]["dataStreamId"]
+              }
+              if (array[q]["dataStreamId"].includes("activity")) {
+                activity_token = array[q]["dataStreamId"]
+              }
+            }
+            console.log(heart_rate_token)
+            console.log(step_count_token)
+            console.log(distance_token)
+            console.log(calories_token)
+            console.log(activity_token)
+            this.setState({
+              heart_rate_token: heart_rate_token,
+              step_count_token: step_count_token,
+              distance_token: distance_token,
+              calories_token: calories_token,
+              activity_token: activity_token
+            })
+            // console.log(oxygen_saturation_token)
+            // console.log(array[q]["device"]["uid"])
+          } catch (error) {
+            console.log(error)
+          }
+        }
+      }
+    })
+  }
+
   onHeart = async () => {
     var myDate = new Date(this.state.startDate+"T00:00:00+0000");
+    console.log(this.state.token)
     var result1 = myDate.getTime();
     var result2 = this.state.endDate
-    await axios.get('https://www.googleapis.com/fitness/v1/users/me/dataSources/derived:com.google.heart_rate.bpm:com.google.android.gms:merge_heart_rate_bpm/datasets/'+result1+'000000-'+result2+'000000',{
+    await axios.get('https://www.googleapis.com/fitness/v1/users/me/dataSources/'+this.state.heart_rate_token+'/datasets/'+result1+'000000-'+result2+'000000',{
         headers: {
-            'Authorization': 'Bearer '+this.state.token,
+            'Authorization': 'Bearer ' + this.state.token,
         }
     }).then((resp) => {
       var array = resp.data["point"]
@@ -110,6 +175,7 @@ class App extends React.Component {
         this.setState({
           dataset:dA
         })
+        console.log(dA)
         var uniqueItems = Array.from(new Set(items));
         var str = "time," + uniqueItems.toString();
         var columns = str.split(",");
@@ -159,6 +225,7 @@ class App extends React.Component {
     var url = window.location.href;
     var a = url.split("access_token="); 
     var access_token = a[1].split("&")[0];
+    console.log(access_token)
     await this.setState({
       token: access_token
     })
@@ -166,6 +233,7 @@ class App extends React.Component {
       return
     } else {
       // await this.onStep();
+      await this.dataSource();
       await this.onHeart();
     }
     return
@@ -188,7 +256,7 @@ class App extends React.Component {
     var dA = this.state.dataset;
     var oldDate = dA[0]["date"];
     var dict = {};
-    for (var i = 0; i < dA.length; i = i + 30) {
+    for (var i = 0; i < dA.length; i = i + 1) {
       if (i === 0) {
         let obj = { name: oldDate, time: dA[0]["time"], HR: dA[0]["val"] };
         dataSet.push(obj);
@@ -277,7 +345,7 @@ class App extends React.Component {
           </p>
           <a
             className="App-link"
-            href="https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=https://master.d2m969ldhi4wsh.amplifyapp.com/&prompt=consent&response_type=token&client_id=636081071621-u85kar6sv7pmh9bavag43feu809cqr5i.apps.googleusercontent.com&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.activity.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.blood_glucose.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.blood_pressure.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.body.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.body_temperature.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.location.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.nutrition.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.oxygen_saturation.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.reproductive_health.read&access_type=online"
+            href="https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=http://localhost:3000&prompt=consent&response_type=token&client_id=636081071621-u85kar6sv7pmh9bavag43feu809cqr5i.apps.googleusercontent.com&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.activity.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.blood_glucose.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.blood_pressure.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.body.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.body_temperature.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.heart_rate.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.location.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.nutrition.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.oxygen_saturation.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.reproductive_health.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.sleep.read&access_type=online"
             >
             Login
           </a>
