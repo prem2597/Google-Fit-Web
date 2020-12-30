@@ -744,6 +744,15 @@ class App extends React.Component {
             <br></br>
           </div>
           <div className="App-select" style={{textAlign: "center"}}>
+            Note: Please select the date to see the graph. If there is no data then the graph will be an empty graph.
+          </div>
+          <div className="App-select">
+            <br></br>
+          </div>
+          <div className="App-select">
+            <br></br>
+          </div>
+          <div className="App-select" style={{textAlign: "center"}}>
             <form>
               <div style={{textAlign: "center", marginLeft: "45%", width:"10%", backgroundColor: "lightblue"}}>
                 Select a date
@@ -755,6 +764,9 @@ class App extends React.Component {
               </div>
             </form>
           </div>
+          <div>
+            <br></br>
+          </div>
           <div className="App-graph-header">
             <LineChart 
               width={1350}
@@ -763,7 +775,7 @@ class App extends React.Component {
               margin={{top: 5, right: 30, bottom: 5, left: 20}}
             >
               <XAxis dataKey="time">
-                <Label value="hourly data" position="insideBottomRight" offset={-22}></Label>
+                <Label value="hourly data" position="insideBottomRight" offset={-20}></Label>
               </XAxis>
               <YAxis type="number" label={{ value: 'number of beats', angle: -90, position: 'insideBottomLeft' }} domain={[25, 125]}/>
               <Tooltip />
@@ -775,6 +787,11 @@ class App extends React.Component {
               </Line>
             </LineChart>
           </div>
+          <div>
+            <br></br>
+            <br></br>
+            <br></br>
+          </div>
           <div className = "App-graph-step">
             <BarChart
               width={1350}
@@ -785,13 +802,20 @@ class App extends React.Component {
               }}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="time" />
-              <YAxis />
+              <XAxis dataKey="time">
+                <Label value="data as per the timeline" position="insideBottomRight" offset={-20}></Label>
+              </XAxis>
+              <YAxis type="number" label={{ value: 'number of steps', angle: -90, position: 'insideBottomLeft' }} domain={[25, 125]}/>
               <Tooltip />
               <Legend />
               <Bar dataKey="steps" fill="#8884d8" />
 
             </BarChart>
+          </div>
+          <div>
+            <br></br>
+            <br></br>
+            <br></br>
           </div> 
           <div className = "App-graph-calories">
             <BarChart
@@ -803,14 +827,21 @@ class App extends React.Component {
               }}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="time" />
-              <YAxis />
+              <XAxis dataKey="time">
+                <Label value="data as per the timeline" position="insideBottomRight" offset={-20}></Label>
+              </XAxis>
+              <YAxis type="number" label={{ value: 'number of calories burned', angle: -90, position: 'insideBottomLeft' }} domain={[25, 125]}/>
               <Tooltip />
               <Legend />
               <Bar dataKey="calories" fill="#82ca9d" />
 
             </BarChart>
           </div>
+          <div>
+            <br></br>
+            <br></br>
+            <br></br>
+          </div> 
           <div className = "App-graph-distance">
             <BarChart
               width={1350}
@@ -821,14 +852,26 @@ class App extends React.Component {
               }}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="time" />
-              <YAxis />
+              <XAxis dataKey="time">
+                <Label value="data as per the timeline" position="insideBottomRight" offset={-20}></Label>
+              </XAxis>
+              <YAxis type="number" label={{ value: 'distance travelled in meters', angle: -90, position: 'insideBottomLeft' }} domain={[25, 125]}/>
               <Tooltip />
               <Legend />
               <Bar dataKey="distance" fill="#ca8286" />
 
             </BarChart>
-          </div>       
+          </div>
+          <div>
+            <br></br>
+            <br></br>
+            <br></br>
+          </div>
+          <div>
+            <br></br>
+            <br></br>
+            <br></br>
+          </div>          
         </div>
       )
     }
@@ -840,7 +883,7 @@ class App extends React.Component {
           </p>
           <a
             className="App-link"
-            href="https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=https://master.d2m969ldhi4wsh.amplifyapp.com/&prompt=consent&response_type=token&client_id=636081071621-u85kar6sv7pmh9bavag43feu809cqr5i.apps.googleusercontent.com&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.activity.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.blood_glucose.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.blood_pressure.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.body.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.body_temperature.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.heart_rate.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.location.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.nutrition.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.oxygen_saturation.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.reproductive_health.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.sleep.read&access_type=online"
+            href="https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=http://localhost:3000&prompt=consent&response_type=token&client_id=636081071621-u85kar6sv7pmh9bavag43feu809cqr5i.apps.googleusercontent.com&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.activity.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.blood_glucose.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.blood_pressure.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.body.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.body_temperature.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.heart_rate.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.location.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.nutrition.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.oxygen_saturation.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.reproductive_health.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.sleep.read&access_type=online"
             >
             Login
           </a>
