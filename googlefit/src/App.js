@@ -785,8 +785,10 @@ class App extends React.Component {
               }}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="time" />
-              <YAxis />
+              <XAxis dataKey="time">
+                <Label value="hourly data" position="insideBottomRight" offset={-22}></Label>
+              </XAxis>
+              <YAxis type="number" label={{ value: 'number of steps', angle: -90, position: 'insideBottomLeft' }} domain={[25, 125]}/>
               <Tooltip />
               <Legend />
               <Bar dataKey="steps" fill="#8884d8" />
@@ -803,8 +805,10 @@ class App extends React.Component {
               }}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="time" />
-              <YAxis />
+              <XAxis dataKey="time">
+                <Label value="hourly data" position="insideBottomRight" offset={-22}></Label>
+              </XAxis>
+              <YAxis type="number" label={{ value: 'total number of calories burned', angle: -90, position: 'insideBottomLeft' }} domain={[25, 125]}/>
               <Tooltip />
               <Legend />
               <Bar dataKey="calories" fill="#82ca9d" />
@@ -821,8 +825,10 @@ class App extends React.Component {
               }}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="time" />
-              <YAxis />
+              <XAxis dataKey="time">
+                <Label value="hourly data" position="insideBottomRight" offset={-22}></Label>
+              </XAxis>
+              <YAxis type="number" label={{ value: 'distance travelled in meters', angle: -90, position: 'insideBottomLeft' }} domain={[25, 125]}/>
               <Tooltip />
               <Legend />
               <Bar dataKey="distance" fill="#ca8286" />
